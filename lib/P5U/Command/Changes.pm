@@ -5,9 +5,11 @@ use strict;
 use utf8;
 use P5U-command;
 
+use match::simple;
+
 BEGIN {
 	$P5U::Command::Changes::AUTHORITY = 'cpan:TOBYINK';
-	$P5U::Command::Changes::VERSION   = '0.001';
+	$P5U::Command::Changes::VERSION   = '0.002';
 }
 
 use constant {
@@ -80,7 +82,7 @@ sub execute
 	my ($start, $end);
 	if (defined $versions and $versions =~ /\.{2}/)
 		{ ($start, $end) = split /\.{2}/, $versions }
-	elsif (defined $versions and $versions ~~ $DATE)
+	elsif (defined $versions and $versions |M| $DATE)
 		{ ($start, $end) = ($versions, $latest) }
 	elsif (defined $versions and length $versions)
 		{ ($start, $end) = ($versions) x 2 }
@@ -97,7 +99,7 @@ sub execute
 		$_ = $mod->version;
 	}
 
-	my ($start_is_date, $end_is_date) = map { $_ ~~ $DATE } ($start, $end);
+	my ($start_is_date, $end_is_date) = map { $_ |M| $DATE } ($start, $end);
 
 	for my $R (CPAN::Changes->load_string($changes)->releases)
 	{
@@ -174,7 +176,7 @@ Toby Inkster E<lt>tobyink@cpan.orgE<gt>.
 
 =head1 COPYRIGHT AND LICENCE
 
-This software is copyright (c) 2012 by Toby Inkster.
+This software is copyright (c) 2012-2013 by Toby Inkster.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
